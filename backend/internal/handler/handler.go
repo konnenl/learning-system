@@ -16,6 +16,16 @@ func NewHandler() *Handler {
 	}
 }
 func (h *Handler) InitRoutes(e *echo.Echo) {
+	//TODO auth middleware
 	e.GET("/", h.user.home)
-	e.GET("/admin", h.admin.home)
+	e.GET("/login", h.user.login)
+	e.GET("/register", h.user.register)
+	e.GET("/logout", h.user.logout)
+	e.GET("/test", h.user.test)
+
+	admin := e.Group("/admin")
+	admin.GET("/home", h.user.home)
+	admin.GET("/create-topic", h.user.home)
+	admin.GET("/create-question", h.user.home)
+	admin.GET("/topics", h.user.home)
 }
