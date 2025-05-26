@@ -1,20 +1,37 @@
 package main
 
-import(
-	"log"
+import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"log"
+	"fmt"
 
+	"github.com/konnenl/learning-system/config"
 	"github.com/konnenl/learning-system/internal/handler"
 	"github.com/konnenl/learning-system/internal/template"
-	"github.com/konnenl/learning-system/config"
+	"github.com/konnenl/learning-system/internal/database"
 )
 
-func main(){
+func main() {
+	fmt.Println("dhui")
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatalf("Failed to load config: %q", err)
 	}
+	db, err := database.New()
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %q", err)
+	}
+	err = database.Migrate(db)
+	if err != nil {
+		log.Fatalf("Migration failed: %v", err)
+	}
+	log.Println("Migration completed successfully!")
+	defer func() {
+		if sqlDB, err := db.DB(); err == nil {
+			sqlDB.Close()
+		}
+	}()
 
 	e := echo.New()
 	renderer := template.InitTemplate()

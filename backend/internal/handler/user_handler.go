@@ -1,12 +1,12 @@
 package handler
 
-import(
+import (
 	"github.com/labstack/echo/v4"
 )
 
 type userHandler struct{}
 
-func newUserHandler() *userHandler{
+func newUserHandler() *userHandler {
 	return &userHandler{}
 }
 

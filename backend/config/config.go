@@ -1,12 +1,12 @@
 package config
 
 import (
-	"os"
 	"github.com/joho/godotenv"
+	"os"
 )
 
 type Config struct {
-	ServerPort   string
+	ServerPort string
 }
 
 func LoadConfig() (*Config, error) {
@@ -15,7 +15,7 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 	return &Config{
-		ServerPort:   getEnv("SERVER_PORT", ":8080"),
+		ServerPort: getEnv("SERVER_PORT", ":8080"),
 	}, nil
 }
 

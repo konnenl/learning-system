@@ -1,17 +1,17 @@
 package handler
 
-import(
+import (
 	"github.com/labstack/echo/v4"
 )
 
-type Handler struct{
-	user *userHandler
+type Handler struct {
+	user  *userHandler
 	admin *adminHandler
 }
 
 func NewHandler() *Handler {
 	return &Handler{
-		user: newUserHandler(),
+		user:  newUserHandler(),
 		admin: newAdminHandler(),
 	}
 }
