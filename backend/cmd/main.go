@@ -10,6 +10,7 @@ import (
 	"github.com/konnenl/learning-system/internal/handler"
 	"github.com/konnenl/learning-system/internal/template"
 	"github.com/konnenl/learning-system/internal/database"
+	"github.com/konnenl/learning-system/internal/service"
 )
 
 func main() {
@@ -41,7 +42,9 @@ func main() {
 		Format: `${time_rfc3339} | ${method} | ${uri} | ${status} | ${latency_human} | ${error}` + "\n",
 	}))
 
-	handlers := handler.NewHandler()
+	service := service.NewService()
+
+	handlers := handler.NewHandler(service)
 	handlers.InitRoutes(e)
 
 	port := ":" + cfg.ServerPort

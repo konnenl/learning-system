@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/konnenl/learning-system/internal/service"
 )
 
 type Handler struct {
@@ -9,9 +10,9 @@ type Handler struct {
 	admin *adminHandler
 }
 
-func NewHandler() *Handler {
+func NewHandler(service *service.Service) *Handler {
 	return &Handler{
-		user:  newUserHandler(),
+		user:  newUserHandler(service.User, service.Lesson),
 		admin: newAdminHandler(),
 	}
 }
