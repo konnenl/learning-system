@@ -1,0 +1,3 @@
+inside/
+*.db
+.env
