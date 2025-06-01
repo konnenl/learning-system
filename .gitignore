@@ -1,3 +1,6 @@
-inside/
 *.db
 .env
+
+inside/
+*.pk  
+__pycache__/
