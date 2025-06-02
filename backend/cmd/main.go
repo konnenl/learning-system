@@ -8,13 +8,12 @@ import (
 
 	"github.com/konnenl/learning-system/config"
 	"github.com/konnenl/learning-system/internal/handler"
-	"github.com/konnenl/learning-system/internal/template"
 	"github.com/konnenl/learning-system/internal/database"
 	"github.com/konnenl/learning-system/internal/service"
 )
 
 func main() {
-	fmt.Println("dhui")
+	fmt.Println("dneo")
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		log.Fatalf("Failed to load config: %q", err)
@@ -35,9 +34,6 @@ func main() {
 	}()
 
 	e := echo.New()
-	renderer := template.InitTemplate()
-	e.Renderer = renderer
-	e.Static("/static", "ui/static")
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: `${time_rfc3339} | ${method} | ${uri} | ${status} | ${latency_human} | ${error}` + "\n",
 	}))

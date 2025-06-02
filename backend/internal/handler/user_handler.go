@@ -18,10 +18,9 @@ func newUserHandler(userService service.UserService, lessonService service.Lesso
 }
 
 func (h *userHandler) home(c echo.Context) error {
-	//TODO логика получения данны[]
 	level := "A1"
 	testTitle := "Тест по теме животные"
-	return c.Render(200, "user/home", map[string]interface{}{
+	return c.JSON(200,map[string]interface{}{
 		"HasLevel": true,
 		"Level": level,
 		"TestTitle": testTitle,
@@ -29,12 +28,6 @@ func (h *userHandler) home(c echo.Context) error {
 }
 
 func (h *userHandler) test(c echo.Context) error {
-	return c.Render(200, "user/test", map[string]interface{}{
-		"Title": "Прохождение теста",
-	})
-}
-
-func (h *userHandler) testPost(c echo.Context) error {
 	return c.JSON(200, echo.Map{
 		"message": "ok",
 	})

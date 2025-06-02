@@ -21,19 +21,12 @@ func NewHandler(service *service.Service) *Handler {
 func (h *Handler) InitRoutes(e *echo.Echo) {
 	//TODO auth middleware
 	e.GET("/login", h.auth.login)
-	e.POST("/login", h.auth.loginPost)
 	e.GET("/register", h.auth.register)
-	e.POST("/register", h.auth.registerPost)
-	e.POST("/logout", h.auth.logoutPost)
+	e.POST("/logout", h.auth.logout)
 
 	user := e.Group("/user")
 	user.GET("/", h.user.home)
 	user.GET("/test", h.user.test)
-	user.POST("/test", h.user.testPost)
 
-	admin := e.Group("/admin")
-	admin.GET("/home", h.user.home)
-	admin.GET("/create-topic", h.user.home)
-	admin.GET("/create-question", h.user.home)
-	admin.GET("/topics", h.user.home)
+	//admin := e.Group("/admin")
 }

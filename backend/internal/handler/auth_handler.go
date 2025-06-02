@@ -16,32 +16,19 @@ func newAuthHandler(userService service.UserService) *authHandler {
 }
 
 func (h *authHandler) login(c echo.Context) error {
-	return c.Render(200, "auth/login", map[string]interface{}{
-		"Title": "Авторизация",
-	})
-}
-
-func (h *authHandler) loginPost(c echo.Context) error {
 	return c.JSON(200, echo.Map{
 		"message": "ok",
 	})
 }
 
-func (h *authHandler) logoutPost(c echo.Context) error {
+func (h *authHandler) logout(c echo.Context) error {
 	return c.JSON(200, echo.Map{
 		"message": "ok",
 	})
 }
 
 func (h *authHandler) register(c echo.Context) error {
-	return c.Render(200, "auth/register", map[string]interface{}{
-		"Title": "Register",
-	})
-}
-
-func (h *authHandler) registerPost(c echo.Context) error {
 	return c.JSON(200, echo.Map{
 		"message": "ok",
 	})
 }
-
