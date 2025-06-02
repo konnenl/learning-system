@@ -28,4 +28,5 @@ type UserRepository interface {
 
 type WordRepository interface {
 	GetWords() ([]*model.Word, error)
+	GetLevels(words_id []uint) ([]string, error)
 }

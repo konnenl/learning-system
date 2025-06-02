@@ -13,7 +13,7 @@ type userLoginRequest struct {
 
 type placementTestRequest struct {
 	Answers []struct {
-		ID    uint `json:"id"`
-		Known bool `json:"know"`
+		ID   uint `json:"id"`
+		Know bool `json:"know"`
 	} `json:"answers"`
 }

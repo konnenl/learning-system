@@ -12,13 +12,13 @@ type Service struct {
 
 func NewService(repository *repository.Repository, key string, expires int) *Service {
 	return &Service{
-		Model: newModelService(),
+		Model: newModelService(repository.Word, repository.User),
 		Auth:  newJWTService(key, expires),
 	}
 }
 
 type ModelService interface {
-	GetLevel(input PlacementTestInput) (string, error)
+	ProcessPlacementTest(id uint, data []WordAnswer) (string, error)
 }
 
 type AuthService interface {

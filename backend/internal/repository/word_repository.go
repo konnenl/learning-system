@@ -32,3 +32,21 @@ func (r *wordRepository) GetWords() ([]*model.Word, error) {
 	}
 	return words, nil
 }
+
+func (r *wordRepository) GetLevels(words_id []uint) ([]string, error) {
+	levels := make([]string, len(words_id))
+	var temp string
+	for i, id := range words_id {
+		err := r.db.
+			Model(&model.Word{}).
+			Where("id = ?", id).
+			Select("level").
+			Scan(&temp).
+			Error
+		if err != nil {
+			return nil, err
+		}
+		levels[i] = temp
+	}
+	return levels, nil
+}

@@ -80,13 +80,14 @@ func (h *userHandler) getPlacementTest(c echo.Context) error {
 	words, err := h.wordRepository.GetWords()
 	if err != nil {
 		return c.JSON(200, echo.Map{
-			"message": "error",
+			"message": "Error",
+			"level":   level,
 		})
 	}
 
 	placement_test_responce := newPlacementTestResponce(words)
 	return c.JSON(200, echo.Map{
-		"message":        "ok",
+		"message":        "Ok",
 		"placement_test": placement_test_responce,
 	})
 }
@@ -115,26 +116,15 @@ func (h *userHandler) submitPlacementTest(c echo.Context) error {
 		})
 	}
 
-	input := service.PlacementTestInput{
-		UserID:  id,
-		Answers: make([]service.WordAnswer, len(r.Answers)),
-	}
-
+	data := make([]service.WordAnswer, len(r.Answers))
 	for i, a := range r.Answers {
-		input.Answers[i] = service.WordAnswer{
-			WordID: a.ID,
-			Known:  a.Known,
+		data[i] = service.WordAnswer{
+			ID:   a.ID,
+			Know: a.Know,
 		}
 	}
 
-	level, err := h.modelService.GetLevel(input)
-	if err != nil {
-		return c.JSON(500, echo.Map{
-			"error": "Internal error",
-		})
-	}
-
-	err = h.userRepository.UpdateLevel(id, level)
+	level, err := h.modelService.ProcessPlacementTest(id, data)
 	if err != nil {
 		return c.JSON(500, echo.Map{
 			"error": "Internal error",
@@ -142,7 +132,7 @@ func (h *userHandler) submitPlacementTest(c echo.Context) error {
 	}
 
 	return c.JSON(200, echo.Map{
-		"message": "ok",
+		"message": "Ok",
 		"level":   level,
 	})
 }
