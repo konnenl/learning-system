@@ -6,14 +6,12 @@ import (
 )
 
 type userHandler struct{
-	userService service.UserService
-	lessonService service.LessonService
+	authService service.AuthService
 }
 
-func newUserHandler(userService service.UserService, lessonService service.LessonService) *userHandler {
+func newUserHandler(authService service.AuthService) *userHandler {
 	return &userHandler{
-		userService: userService,
-		lessonService: lessonService,
+		authService: authService,
 	}
 }
 
@@ -28,6 +26,12 @@ func (h *userHandler) home(c echo.Context) error {
 }
 
 func (h *userHandler) test(c echo.Context) error {
+	return c.JSON(200, echo.Map{
+		"message": "ok",
+	})
+}
+
+func (h *userHandler) predict(c echo.Context) error {
 	return c.JSON(200, echo.Map{
 		"message": "ok",
 	})
