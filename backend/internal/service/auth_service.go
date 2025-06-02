@@ -1,12 +1,12 @@
 package service
 
 import (
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"strings"
 	"time"
-	"fmt"
 )
 
 type JWTService struct {
@@ -61,7 +61,7 @@ func (s *JWTService) Middleware() echo.MiddlewareFunc {
 			if err != nil {
 				return nil, echo.NewHTTPError(401, "Invalid token")
 			}
-			
+
 			return token, nil
 		},
 		ErrorHandler: func(c echo.Context, err error) error {
@@ -74,18 +74,18 @@ func (s *JWTService) Middleware() echo.MiddlewareFunc {
 }
 
 func (s *JWTService) AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-    return func(c echo.Context) error {
-        claims, err := s.GetClaims(c)
-        if err != nil {
-            return err
-        }
-        
-        if claims.Role != "admin" {
-            return echo.NewHTTPError(403, "Forbidden")
-        }
-        
-        return next(c)
-    }
+	return func(c echo.Context) error {
+		claims, err := s.GetClaims(c)
+		if err != nil {
+			return err
+		}
+
+		if claims.Role != "admin" {
+			return echo.NewHTTPError(403, "Forbidden")
+		}
+
+		return next(c)
+	}
 }
 
 func (s *JWTService) GetClaims(c echo.Context) (*Claims, error) {
@@ -103,4 +103,3 @@ func (s *JWTService) GetClaims(c echo.Context) (*Claims, error) {
 	}
 	return claims, nil
 }
-

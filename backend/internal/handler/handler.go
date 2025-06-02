@@ -1,23 +1,23 @@
 package handler
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/konnenl/learning-system/internal/service"
 	"github.com/konnenl/learning-system/internal/repository"
+	"github.com/konnenl/learning-system/internal/service"
+	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {
-	user  *userHandler
-	admin *adminHandler
-	auth *authHandler
+	user        *userHandler
+	admin       *adminHandler
+	auth        *authHandler
 	authService service.AuthService
 }
 
 func NewHandler(service *service.Service, repository *repository.Repository) *Handler {
 	return &Handler{
-		user:  newUserHandler(service.Auth, repository.Word, repository.User),
-		admin: newAdminHandler(service.Auth),
-		auth: newAuthHandler(service.Auth, repository.User),
+		user:        newUserHandler(service.Auth, repository.Word, repository.User),
+		admin:       newAdminHandler(service.Auth),
+		auth:        newAuthHandler(service.Auth, repository.User),
 		authService: service.Auth,
 	}
 }

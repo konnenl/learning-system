@@ -1,9 +1,8 @@
 package service
 
-type lessonService struct{
-
+type lessonService struct {
 }
 
-func newLessonService() *lessonService{
+func newLessonService() *lessonService {
 	return &lessonService{}
 }

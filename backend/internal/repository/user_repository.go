@@ -52,7 +52,7 @@ func (r *userRepository) GetByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) GetLevel(id uint) (string, error){
+func (r *userRepository) GetLevel(id uint) (string, error) {
 	var level string
 	err := r.db.
 		Model(&model.User{}).
@@ -60,7 +60,7 @@ func (r *userRepository) GetLevel(id uint) (string, error){
 		Select("level").
 		Scan(&level).
 		Error
-	if err != nil{
+	if err != nil {
 		return "", err
 	}
 	return level, nil

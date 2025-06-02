@@ -1,11 +1,11 @@
 package handler
 
 import (
-	_ "github.com/labstack/echo/v4"
 	"github.com/konnenl/learning-system/internal/service"
+	_ "github.com/labstack/echo/v4"
 )
 
-type adminHandler struct{
+type adminHandler struct {
 	authService service.AuthService
 }
 

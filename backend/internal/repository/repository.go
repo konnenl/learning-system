@@ -6,14 +6,14 @@ import (
 )
 
 type Repository struct {
-	User    UserRepository
+	User UserRepository
 	Word WordRepository
 }
 
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
-		User:    newUserRepository(db),
-		Word:    newWordRepository(db),
+		User: newUserRepository(db),
+		Word: newWordRepository(db),
 	}
 }
 
@@ -25,6 +25,6 @@ type UserRepository interface {
 	GetLevel(id uint) (string, error)
 }
 
-type WordRepository interface{
+type WordRepository interface {
 	GetWords() ([]*model.Word, error)
 }

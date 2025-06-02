@@ -1,13 +1,12 @@
 package service
 
-type modelService struct{
-
+type modelService struct {
 }
 
-func newModelService() *modelService{
+func newModelService() *modelService {
 	return &modelService{}
 }
 
-func (s *modelService) GetLevel() string{
+func (s *modelService) GetLevel() string {
 	return "A1"
 }

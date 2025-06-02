@@ -1,22 +1,22 @@
 package handler
 
 import (
-	"strings"
-	"github.com/labstack/echo/v4"
+	"github.com/konnenl/learning-system/internal/model"
+	"github.com/konnenl/learning-system/internal/repository"
 	"github.com/konnenl/learning-system/internal/service"
 	"github.com/konnenl/learning-system/internal/validator"
-	"github.com/konnenl/learning-system/internal/repository"
-	"github.com/konnenl/learning-system/internal/model"
+	"github.com/labstack/echo/v4"
+	"strings"
 )
 
-type authHandler struct{
-	authService service.AuthService
+type authHandler struct {
+	authService    service.AuthService
 	userRepository repository.UserRepository
 }
 
 func newAuthHandler(authService service.AuthService, userRepository repository.UserRepository) *authHandler {
 	return &authHandler{
-		authService: authService,
+		authService:    authService,
 		userRepository: userRepository,
 	}
 }
@@ -75,12 +75,12 @@ func (h *authHandler) register(c echo.Context) error {
 	}
 
 	user := &model.User{
-		Fullname:     r.Fullname,
+		Fullname: r.Fullname,
 		Email:    r.Email,
 		Password: hashedPassword,
 		Role:     "user",
 	}
-	
+
 	id, err := h.userRepository.Create(user)
 	if err != nil {
 		if strings.Contains(err.Error(), "email already exist") {

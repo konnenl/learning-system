@@ -1,17 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"log"
-	"fmt"
 
 	"github.com/konnenl/learning-system/config"
-	"github.com/konnenl/learning-system/internal/handler"
 	"github.com/konnenl/learning-system/internal/database"
+	"github.com/konnenl/learning-system/internal/handler"
+	"github.com/konnenl/learning-system/internal/repository"
 	"github.com/konnenl/learning-system/internal/service"
 	"github.com/konnenl/learning-system/internal/validator"
-	"github.com/konnenl/learning-system/internal/repository"
 )
 
 func main() {
@@ -41,10 +41,10 @@ func main() {
 	}))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"*"},
-		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
-		AllowHeaders: []string{echo.HeaderAuthorization, echo.HeaderContentType},
+		AllowMethods:     []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+		AllowHeaders:     []string{echo.HeaderAuthorization, echo.HeaderContentType},
 		ExposeHeaders:    []string{echo.HeaderAuthorization},
-    	AllowCredentials: true,
+		AllowCredentials: true,
 	}))
 	e.Validator = validator.New()
 

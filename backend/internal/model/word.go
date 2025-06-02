@@ -7,5 +7,5 @@ import (
 type Word struct {
 	gorm.Model
 	Word  string `gorm:"unique;not null"`
-	Level string   `gorm:"not null"`
+	Level string `gorm:"not null"`
 }

@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"github.com/joho/godotenv"
+	"os"
 )
 
 type Config struct {
