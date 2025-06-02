@@ -1,5 +1,5 @@
-*.db
 .env
+*.db
 
 inside/
 *.pk  

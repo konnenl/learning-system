@@ -3,36 +3,88 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/konnenl/learning-system/internal/service"
+	"github.com/konnenl/learning-system/internal/repository"
 )
 
 type userHandler struct{
 	authService service.AuthService
+	wordRepository repository.WordRepository
+	userRepository repository.UserRepository
 }
 
-func newUserHandler(authService service.AuthService) *userHandler {
+func newUserHandler(authService service.AuthService, wordRepository repository.WordRepository, userRepository repository.UserRepository) *userHandler {
 	return &userHandler{
 		authService: authService,
+		wordRepository: wordRepository,
+		userRepository: userRepository,
 	}
 }
 
-func (h *userHandler) home(c echo.Context) error {
-	level := "A1"
-	testTitle := "Тест по теме животные"
-	return c.JSON(200,map[string]interface{}{
-		"HasLevel": true,
-		"Level": level,
-		"TestTitle": testTitle,
+// users.GET("/level", h.user.getLevel) // уровень
+func (h *userHandler) getLevel(c echo.Context) error {
+	claims, err := h.authService.GetClaims(c)
+	if err != nil {
+		if httpErr, ok := err.(*echo.HTTPError); ok {
+			return httpErr
+		}
+		return echo.NewHTTPError(401, "Invalid authentication")
+	}
+
+	id := uint(claims.UserId)
+
+	level, err := h.userRepository.GetLevel(id)
+
+	if err != nil{
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"message": "ok",
+		"level": level,
 	})
 }
 
-func (h *userHandler) test(c echo.Context) error {
-	return c.JSON(200, echo.Map{
-		"message": "ok",
-	})
-}
+// users.GET("/test/next", h.user.getTest) // тест (название, вопросы)
+// users.POST("/test/submit", h.user.submitTest) // отправка ответов -> взять ответы, посчитать правильные, поменять значение progress
 
-func (h *userHandler) predict(c echo.Context) error {
+// users.GET("/placement", h.user.getPlacementTest) // входной тест
+func (h *userHandler) getPlacementTest(c echo.Context) error{
+	claims, err := h.authService.GetClaims(c)
+	if err != nil {
+		if httpErr, ok := err.(*echo.HTTPError); ok {
+			return httpErr
+		}
+		return echo.NewHTTPError(401, "Invalid authentication")
+	}
+
+	id := uint(claims.UserId)
+	level, err := h.userRepository.GetLevel(id)
+
+	if err != nil{
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
+		})
+	}
+
+	if level != ""{
+		return c.JSON(200, echo.Map{
+			"error":  "Placement test already completed",
+		})
+	}
+
+	words, err := h.wordRepository.GetWords()
+	if err != nil{
+		return c.JSON(200, echo.Map{
+			"message": "error",
+		})
+	}
+
+	placement_test_responce := newPlacementTestResponce(words)
 	return c.JSON(200, echo.Map{
 		"message": "ok",
+		"placement_test": placement_test_responce,
 	})
 }
+// users.POST("/placement", h.user.submitPlacementTest) // отправка ответов -> взять ответы на входной тест, отправить в модель, записать уровень в бд
