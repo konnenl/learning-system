@@ -65,3 +65,12 @@ func (r *userRepository) GetLevel(id uint) (string, error) {
 	}
 	return level, nil
 }
+
+func (r *userRepository) UpdateLevel(id uint, level string) error {
+	err := r.db.
+		Model(&model.User{}).
+		Where("id = ?", id).
+		Update("level", level).
+		Error
+	return err
+}

@@ -7,6 +7,6 @@ func newModelService() *modelService {
 	return &modelService{}
 }
 
-func (s *modelService) GetLevel() string {
-	return "A1"
+func (s *modelService) GetLevel(input PlacementTestInput) (string, error) {
+	return "B1", nil
 }

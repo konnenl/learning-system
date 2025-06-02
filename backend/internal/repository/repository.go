@@ -23,6 +23,7 @@ type UserRepository interface {
 	GetByID(id uint) (*model.User, error)
 	GetByEmail(email string) (*model.User, error)
 	GetLevel(id uint) (string, error)
+	UpdateLevel(id uint, level string) error
 }
 
 type WordRepository interface {

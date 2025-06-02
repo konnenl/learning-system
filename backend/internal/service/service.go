@@ -6,24 +6,19 @@ import (
 )
 
 type Service struct {
-	Model  ModelService
-	Lesson LessonService
-	Auth   AuthService
+	Model ModelService
+	Auth  AuthService
 }
 
 func NewService(repository *repository.Repository, key string, expires int) *Service {
 	return &Service{
-		Model:  newModelService(),
-		Lesson: newLessonService(),
-		Auth:   newJWTService(key, expires),
+		Model: newModelService(),
+		Auth:  newJWTService(key, expires),
 	}
 }
 
 type ModelService interface {
-	GetLevel() string
-}
-
-type LessonService interface {
+	GetLevel(input PlacementTestInput) (string, error)
 }
 
 type AuthService interface {

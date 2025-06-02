@@ -3,18 +3,21 @@ package handler
 import (
 	"github.com/konnenl/learning-system/internal/repository"
 	"github.com/konnenl/learning-system/internal/service"
+	"github.com/konnenl/learning-system/internal/validator"
 	"github.com/labstack/echo/v4"
 )
 
 type userHandler struct {
 	authService    service.AuthService
+	modelService   service.ModelService
 	wordRepository repository.WordRepository
 	userRepository repository.UserRepository
 }
 
-func newUserHandler(authService service.AuthService, wordRepository repository.WordRepository, userRepository repository.UserRepository) *userHandler {
+func newUserHandler(authService service.AuthService, wordRepository repository.WordRepository, userRepository repository.UserRepository, modelService service.ModelService) *userHandler {
 	return &userHandler{
 		authService:    authService,
+		modelService:   modelService,
 		wordRepository: wordRepository,
 		userRepository: userRepository,
 	}
@@ -89,3 +92,57 @@ func (h *userHandler) getPlacementTest(c echo.Context) error {
 }
 
 // users.POST("/placement", h.user.submitPlacementTest) // отправка ответов -> взять ответы на входной тест, отправить в модель, записать уровень в бд
+func (h *userHandler) submitPlacementTest(c echo.Context) error {
+	claims, err := h.authService.GetClaims(c)
+	if err != nil {
+		if httpErr, ok := err.(*echo.HTTPError); ok {
+			return httpErr
+		}
+		return echo.NewHTTPError(401, "Invalid authentication")
+	}
+	id := uint(claims.UserId)
+
+	var r placementTestRequest
+	if err := c.Bind(&r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Bad request",
+		})
+	}
+	if err := c.Validate(r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error":  "Validation failed",
+			"fields": validator.GetValidationErrors(err),
+		})
+	}
+
+	input := service.PlacementTestInput{
+		UserID:  id,
+		Answers: make([]service.WordAnswer, len(r.Answers)),
+	}
+
+	for i, a := range r.Answers {
+		input.Answers[i] = service.WordAnswer{
+			WordID: a.ID,
+			Known:  a.Known,
+		}
+	}
+
+	level, err := h.modelService.GetLevel(input)
+	if err != nil {
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
+		})
+	}
+
+	err = h.userRepository.UpdateLevel(id, level)
+	if err != nil {
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"message": "ok",
+		"level":   level,
+	})
+}
