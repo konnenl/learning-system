@@ -1,24 +1,26 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/konnenl/learning-system/internal/model"
 	"github.com/konnenl/learning-system/internal/repository"
 	"github.com/konnenl/learning-system/internal/service"
 	"github.com/konnenl/learning-system/internal/validator"
 	"github.com/labstack/echo/v4"
 	"strconv"
+	"strings"
 )
 
 type adminHandler struct {
 	authService        service.AuthService
 	categoryRepository repository.CategoryRepository
+	userRepository     repository.userRepository
 }
 
-func newAdminHandler(authService service.AuthService, categoryRepository repository.CategoryRepository) *adminHandler {
+func newAdminHandler(authService service.AuthService, categoryRepository repository.CategoryRepository, userRepository repository.UserRepository) *adminHandler {
 	return &adminHandler{
 		authService:        authService,
 		categoryRepository: categoryRepository,
+		userRepository:     userRepository,
 	}
 }
 
@@ -79,7 +81,6 @@ func (h *adminHandler) getTasksByCategory(c echo.Context) error {
 			"error": "Failed to get category tasks",
 		})
 	}
-	fmt.Println(category)
 	categoryTasksResponce := NewCategoryTasksResponce(category)
 	return c.JSON(200, echo.Map{
 		"category_tasks": categoryTasksResponce,
@@ -140,5 +141,50 @@ func (h *adminHandler) deleteTask(c echo.Context) error {
 
 	return c.JSON(200, echo.Map{
 		"message": "Task deleted",
+	})
+}
+
+func (h *adminHandler) createAdminUser(c echo.Context) error {
+	var r userRegisterRequest
+	if err := c.Bind(&r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Bad request",
+		})
+	}
+
+	if err := c.Validate(r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error":  "Validation failed",
+			"fields": validator.GetValidationErrors(err),
+		})
+	}
+	hashedPassword, err := model.HashPassword(r.Password)
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Bad request",
+		})
+	}
+
+	user := &model.User{
+		Fullname: r.Fullname,
+		Email:    r.Email,
+		Password: hashedPassword,
+		Role:     "admin",
+	}
+
+	id, err := h.userRepository.Create(user)
+	if err != nil {
+		if strings.Contains(err.Error(), "email already exist") {
+			return c.JSON(409, echo.Map{
+				"error": "Email already in use",
+			})
+		}
+		return c.JSON(500, echo.Map{
+			"error": "Failed to create user",
+		})
+	}
+
+	return c.JSON(201, echo.Map{
+		"id": id,
 	})
 }

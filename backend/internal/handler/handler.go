@@ -22,9 +22,9 @@ func NewHandler(service *service.Service, repository *repository.Repository) *Ha
 	}
 }
 func (h *Handler) InitRoutes(e *echo.Echo) {
-	//TODO auth middleware
-	e.POST("/login", h.auth.login)
-	e.POST("/register", h.auth.register)
+	auth := e.Group("/auth")
+	auth.POST("/register", h.auth.register)
+	auth.POST("/login", h.auth.login)
 
 	users := e.Group("/users")
 	users.Use(h.authService.Middleware())
@@ -42,5 +42,5 @@ func (h *Handler) InitRoutes(e *echo.Echo) {
 	admin.GET("/categories/:categoryID/tasks", h.admin.getTasksByCategory)
 	admin.POST("/categories/:categoryID/tasks", h.admin.createTask)
 	admin.DELETE("/categories/:categoryID/tasks/:taskID", h.admin.deleteTask)
-	// admin.POST("/admins", h.admin.createAdminAccount)
+	admin.POST("/users", h.admin.createAdminUser)
 }
