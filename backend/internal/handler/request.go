@@ -22,3 +22,9 @@ type categoryRequest struct {
 	Name  string `json:"name" validate:"required"`
 	Level string `json:"level" validate:"required,level"`
 }
+
+type taskRequest struct {
+	Description string `json:"description" validate:"required"`
+	Question    string `json:"question" validate:"required"`
+	Answer      string `json:"answer" validate:"required"`
+}

@@ -28,18 +28,19 @@ func (h *Handler) InitRoutes(e *echo.Echo) {
 
 	users := e.Group("/users")
 	users.Use(h.authService.Middleware())
-	users.GET("/level", h.user.getLevel) // уровень
-	//users.GET("/test/next", h.user.getTest) // тест (название, вопросы)
-	//users.POST("/test/submit", h.user.submitTest) // отправка ответов -> взять ответы, посчитать правильные, поменять значение progress
-	users.GET("/placement", h.user.getPlacementTest)     // входной тест
-	users.POST("/placement", h.user.submitPlacementTest) // отправка ответов -> взять ответы на входной тест, отправить в модель, записать уровень в бд
+	users.GET("/level", h.user.getLevel)
+	//users.GET("/test/next", h.user.getTest)
+	//users.POST("/test/submit", h.user.submitTest)
+	users.GET("/placement", h.user.getPlacementTest)
+	users.POST("/placement", h.user.submitPlacementTest)
 
 	admin := e.Group("/admin")
 	admin.Use(h.authService.Middleware())
 	admin.Use(h.authService.AdminMiddleware())
 	admin.GET("/categories", h.admin.getAllCategories)
-	// admin.GET("/tasks/:categoryID", h.admin.getTasksByCategory)
 	admin.POST("/categories", h.admin.createCategory)
-	// admin.POST("/tasks", h.admin.createTask)
+	admin.GET("/categories/:categoryID/tasks", h.admin.getTasksByCategory)
+	admin.POST("/categories/:categoryID/tasks", h.admin.createTask)
+	admin.DELETE("/categories/:categoryID/tasks/:taskID", h.admin.deleteTask)
 	// admin.POST("/admins", h.admin.createAdminAccount)
 }

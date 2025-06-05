@@ -30,3 +30,27 @@ func (r *categoryRepository) Create(category *model.Category) (uint, error) {
 	}
 	return category.ID, nil
 }
+
+func (r *categoryRepository) GetCategoryTasks(id uint) (model.Category, error) {
+	var category model.Category
+	err := r.db.
+		Preload("Tasks").
+		First(&category, id).
+		Error
+	if err != nil {
+		return model.Category{}, err
+	}
+	return category, nil
+}
+
+func (r *categoryRepository) CreateTask(task *model.Task) (uint, error) {
+	if err := r.db.Create(&task).Error; err != nil {
+		return 0, err
+	}
+	return task.ID, nil
+}
+
+func (r *categoryRepository) DeleteTask(taskID uint) error {
+	err := r.db.Delete(&model.Task{}, taskID).Error
+	return err
+}
