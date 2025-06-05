@@ -28,3 +28,10 @@ type taskRequest struct {
 	Question    string `json:"question" validate:"required"`
 	Answer      string `json:"answer" validate:"required"`
 }
+
+type testRequest struct {
+	Answers []struct {
+		TaskID uint   `json:"task_id" validate:"required"`
+		Answer string `json:"answer" validate:"required"`
+	} `json:"answers" validate:"required"`
+}

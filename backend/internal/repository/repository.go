@@ -39,4 +39,6 @@ type CategoryRepository interface {
 	CreateTask(task *model.Task) (uint, error)
 	DeleteTask(taskID uint) error
 	GetCategoryTasks(id uint) (model.Category, error)
+	GetNextCategory(id uint) (model.Category, error)
+	UpdateProgress(userID uint, categoryID uint, value float32) error
 }

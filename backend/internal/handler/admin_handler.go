@@ -13,7 +13,7 @@ import (
 type adminHandler struct {
 	authService        service.AuthService
 	categoryRepository repository.CategoryRepository
-	userRepository     repository.userRepository
+	userRepository     repository.UserRepository
 }
 
 func newAdminHandler(authService service.AuthService, categoryRepository repository.CategoryRepository, userRepository repository.UserRepository) *adminHandler {

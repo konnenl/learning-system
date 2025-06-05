@@ -6,14 +6,16 @@ import (
 )
 
 type Service struct {
-	Model ModelService
-	Auth  AuthService
+	Model   ModelService
+	Auth    AuthService
+	Testing TestingService
 }
 
 func NewService(repository *repository.Repository, key string, expires int) *Service {
 	return &Service{
-		Model: newModelService(repository.Word, repository.User),
-		Auth:  newJWTService(key, expires),
+		Model:   newModelService(repository.Word, repository.User),
+		Auth:    newJWTService(key, expires),
+		Testing: newTestingService(repository.Category, repository.User),
 	}
 }
 
@@ -26,4 +28,8 @@ type AuthService interface {
 	Middleware() echo.MiddlewareFunc
 	AdminMiddleware() echo.MiddlewareFunc
 	GetClaims(c echo.Context) (*Claims, error)
+}
+
+type TestingService interface {
+	ProcessTest(userID uint, categoryID uint, data []TaskAnswer) (uint, error)
 }

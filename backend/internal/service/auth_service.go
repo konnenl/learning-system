@@ -84,7 +84,6 @@ func (s *JWTService) AdminMiddleware() echo.MiddlewareFunc {
 			if claims.Role != "admin" {
 				return echo.NewHTTPError(403, "Forbidden")
 			}
-
 			return next(c)
 		}
 	}

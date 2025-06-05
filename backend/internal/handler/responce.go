@@ -75,3 +75,24 @@ func NewCategoryTasksResponce(c model.Category) categoryTasksResponce {
 	categoryTasks.Tasks = tasks
 	return categoryTasks
 }
+
+func NewTestResponce(c model.Category) categoryTasksResponce {
+	categoryTasks := categoryTasksResponce{
+		Category: categoryResponce{
+			ID:    c.ID,
+			Name:  c.Name,
+			Level: c.Level,
+		},
+	}
+	tasks := make([]taskResponce, len(c.Tasks))
+	for i, task := range c.Tasks {
+		task := taskResponce{
+			ID:          task.ID,
+			Description: task.Description,
+			Question:    task.Question,
+		}
+		tasks[i] = task
+	}
+	categoryTasks.Tasks = tasks
+	return categoryTasks
+}

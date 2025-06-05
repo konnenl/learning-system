@@ -15,8 +15,8 @@ type Handler struct {
 
 func NewHandler(service *service.Service, repository *repository.Repository) *Handler {
 	return &Handler{
-		user:        newUserHandler(service.Auth, repository.Word, repository.User, service.Model),
-		admin:       newAdminHandler(service.Auth, repository.Category),
+		user:        newUserHandler(service.Auth, repository.Word, repository.User, repository.Category, service.Model, service.Testing),
+		admin:       newAdminHandler(service.Auth, repository.Category, repository.User),
 		auth:        newAuthHandler(service.Auth, repository.User),
 		authService: service.Auth,
 	}
@@ -29,8 +29,8 @@ func (h *Handler) InitRoutes(e *echo.Echo) {
 	users := e.Group("/users")
 	users.Use(h.authService.Middleware())
 	users.GET("/level", h.user.getLevel)
-	//users.GET("/test/next", h.user.getTest)
-	//users.POST("/test/submit", h.user.submitTest)
+	users.GET("/test/next", h.user.getTest)
+	users.POST("/test/submit/:categoryID", h.user.submitTest)
 	users.GET("/placement", h.user.getPlacementTest)
 	users.POST("/placement", h.user.submitPlacementTest)
 
