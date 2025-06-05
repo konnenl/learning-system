@@ -79,9 +79,8 @@ func (h *userHandler) getPlacementTest(c echo.Context) error {
 
 	words, err := h.wordRepository.GetWords()
 	if err != nil {
-		return c.JSON(200, echo.Map{
-			"message": "Error",
-			"level":   level,
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
 		})
 	}
 

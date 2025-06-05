@@ -6,14 +6,16 @@ import (
 )
 
 type Repository struct {
-	User UserRepository
-	Word WordRepository
+	User     UserRepository
+	Word     WordRepository
+	Category CategoryRepository
 }
 
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
-		User: newUserRepository(db),
-		Word: newWordRepository(db),
+		User:     newUserRepository(db),
+		Word:     newWordRepository(db),
+		Category: newCategoryRepository(db),
 	}
 }
 
@@ -29,4 +31,9 @@ type UserRepository interface {
 type WordRepository interface {
 	GetWords() ([]*model.Word, error)
 	GetLevels(words_id []uint) ([]string, error)
+}
+
+type CategoryRepository interface {
+	GetAllCategories() ([]model.Category, error)
+	Create(category *model.Category) (uint, error)
 }

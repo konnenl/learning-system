@@ -21,3 +21,23 @@ func newPlacementTestResponce(w []*model.Word) []wordResponce {
 
 	return words
 }
+
+type categoryResponce struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Level string `json:"level"`
+}
+
+func newCategoriesResponce(c []model.Category) []categoryResponce {
+	categories := make([]categoryResponce, len(c))
+	for i, category := range c {
+		category_responce := categoryResponce{
+			ID:    category.ID,
+			Name:  category.Name,
+			Level: category.Level,
+		}
+		categories[i] = category_responce
+	}
+
+	return categories
+}

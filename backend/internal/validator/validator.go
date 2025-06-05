@@ -2,6 +2,7 @@ package validator
 
 import (
 	"github.com/go-playground/validator/v10"
+	"regexp"
 	"strings"
 )
 
@@ -11,6 +12,7 @@ type CustomValidator struct {
 
 func New() *CustomValidator {
 	v := validator.New()
+	_ = v.RegisterValidation("level", validateLevel)
 	return &CustomValidator{Validator: v}
 
 }
@@ -31,6 +33,12 @@ func GetValidationErrors(err error) map[string]string {
 	}
 
 	return errors
+}
+
+func validateLevel(field validator.FieldLevel) bool {
+	level := field.Field().String()
+	match, _ := regexp.MatchString(`^(A|B|C)(1|2)$`, level)
+	return match
 }
 
 func getErrorText(err validator.FieldError) string {

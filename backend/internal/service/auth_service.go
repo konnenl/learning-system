@@ -73,18 +73,20 @@ func (s *JWTService) Middleware() echo.MiddlewareFunc {
 	})
 }
 
-func (s *JWTService) AdminMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		claims, err := s.GetClaims(c)
-		if err != nil {
-			return err
-		}
+func (s *JWTService) AdminMiddleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			claims, err := s.GetClaims(c)
+			if err != nil {
+				return err
+			}
 
-		if claims.Role != "admin" {
-			return echo.NewHTTPError(403, "Forbidden")
-		}
+			if claims.Role != "admin" {
+				return echo.NewHTTPError(403, "Forbidden")
+			}
 
-		return next(c)
+			return next(c)
+		}
 	}
 }
 

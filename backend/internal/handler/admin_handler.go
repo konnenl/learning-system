@@ -1,16 +1,66 @@
 package handler
 
 import (
+	"github.com/konnenl/learning-system/internal/model"
+	"github.com/konnenl/learning-system/internal/repository"
 	"github.com/konnenl/learning-system/internal/service"
-	_ "github.com/labstack/echo/v4"
+	"github.com/konnenl/learning-system/internal/validator"
+	"github.com/labstack/echo/v4"
 )
 
 type adminHandler struct {
-	authService service.AuthService
+	authService        service.AuthService
+	categoryRepository repository.CategoryRepository
 }
 
-func newAdminHandler(authService service.AuthService) *adminHandler {
+func newAdminHandler(authService service.AuthService, categoryRepository repository.CategoryRepository) *adminHandler {
 	return &adminHandler{
-		authService: authService,
+		authService:        authService,
+		categoryRepository: categoryRepository,
 	}
+}
+
+func (h *adminHandler) getAllCategories(c echo.Context) error {
+	categories, err := h.categoryRepository.GetAllCategories()
+	if err != nil {
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
+		})
+	}
+	categories_responce := newCategoriesResponce(categories)
+	return c.JSON(200, echo.Map{
+		"categories": categories_responce,
+	})
+}
+
+func (h *adminHandler) createCategory(c echo.Context) error {
+	var r categoryRequest
+	if err := c.Bind(&r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Bad request",
+		})
+	}
+
+	if err := c.Validate(r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error":  "Validation failed",
+			"fields": validator.GetValidationErrors(err),
+		})
+	}
+
+	category := &model.Category{
+		Name:  r.Name,
+		Level: r.Level,
+	}
+
+	id, err := h.categoryRepository.Create(category)
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Failed to create category",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"id": id,
+	})
 }
