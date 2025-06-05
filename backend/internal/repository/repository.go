@@ -26,6 +26,7 @@ type UserRepository interface {
 	GetByEmail(email string) (*model.User, error)
 	GetLevel(id uint) (string, error)
 	UpdateLevel(id uint, level string) error
+	UpgrateLevel(id uint) (string, error)
 }
 
 type WordRepository interface {

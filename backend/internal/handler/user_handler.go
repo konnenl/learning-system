@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/konnenl/learning-system/internal/repository"
 	"github.com/konnenl/learning-system/internal/service"
 	"github.com/konnenl/learning-system/internal/validator"
@@ -45,6 +46,39 @@ func (h *userHandler) getLevel(c echo.Context) error {
 
 	id := uint(claims.UserId)
 
+	category, err := h.categoryRepository.GetNextCategory(id)
+
+	if err != nil {
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
+		})
+	}
+
+	if category.ID == 0 {
+		level, err := h.userRepository.GetLevel(id)
+		if err != nil {
+			return c.JSON(500, echo.Map{
+				"error": "Internal error",
+			})
+		}
+		if level == "C2" {
+			return c.JSON(200, echo.Map{
+				"message": "You've completed all available English levels and all tasks",
+				"level":   level,
+			})
+		}
+		level, err = h.userRepository.UpgrateLevel(id)
+		if err != nil {
+			return c.JSON(500, echo.Map{
+				"error": "Internal error",
+			})
+		}
+		return c.JSON(200, echo.Map{
+			"message": "Level upgraded",
+			"level":   level,
+		})
+	}
+
 	level, err := h.userRepository.GetLevel(id)
 
 	if err != nil {
@@ -54,8 +88,7 @@ func (h *userHandler) getLevel(c echo.Context) error {
 	}
 
 	return c.JSON(200, echo.Map{
-		"message": "ok",
-		"level":   level,
+		"level": level,
 	})
 }
 
@@ -87,7 +120,30 @@ func (h *userHandler) getTest(c echo.Context) error {
 
 	if err != nil {
 		return c.JSON(500, echo.Map{
-			"error": "Failed to get test",
+			"error": "Internal error",
+		})
+	}
+	if category.ID == 0 {
+		level, err := h.userRepository.GetLevel(id)
+		if err != nil {
+			return c.JSON(500, echo.Map{
+				"error": "Internal error",
+			})
+		}
+		if level == "C2" {
+			return c.JSON(200, echo.Map{
+				"message": "You've completed all available English levels and all tasks",
+			})
+		}
+		level, err = h.userRepository.UpgrateLevel(id)
+		if err != nil {
+			return c.JSON(500, echo.Map{
+				"error": "Internal error",
+			})
+		}
+		return c.JSON(200, echo.Map{
+			"message": "Level upgraded",
+			"level":   level,
 		})
 	}
 

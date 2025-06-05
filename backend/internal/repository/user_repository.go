@@ -38,7 +38,7 @@ func (r *userRepository) Authenticate(email string, password string) (*model.Use
 
 func (r *userRepository) GetByID(id uint) (*model.User, error) {
 	var user model.User
-	if err := r.db.Where("user_id = ?", id).First(&user).Error; err != nil {
+	if err := r.db.Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -73,4 +73,25 @@ func (r *userRepository) UpdateLevel(id uint, level string) error {
 		Update("level", level).
 		Error
 	return err
+}
+
+func (r *userRepository) UpgrateLevel(id uint) (string, error) {
+	levels := map[string]string{
+		"A1": "A2",
+		"A2": "B1",
+		"B1": "B2",
+		"B2": "C1",
+		"C1": "C2",
+		"C2": "C2",
+	}
+	user, err := r.GetByID(id)
+	if err != nil {
+		return "", err
+	}
+	err = r.db.
+		Model(&model.User{}).
+		Where("id = ?", id).
+		Update("level", levels[*user.Level]).
+		Error
+	return levels[*user.Level], err
 }
