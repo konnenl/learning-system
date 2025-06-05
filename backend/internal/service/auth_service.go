@@ -89,6 +89,22 @@ func (s *JWTService) AdminMiddleware() echo.MiddlewareFunc {
 	}
 }
 
+func (s *JWTService) UserMiddleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			claims, err := s.GetClaims(c)
+			if err != nil {
+				return err
+			}
+
+			if claims.Role != "user" {
+				return echo.NewHTTPError(403, "Forbidden")
+			}
+			return next(c)
+		}
+	}
+}
+
 func (s *JWTService) GetClaims(c echo.Context) (*Claims, error) {
 	token, ok := c.Get("user").(*jwt.Token)
 	if !ok {

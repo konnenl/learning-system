@@ -27,6 +27,7 @@ type AuthService interface {
 	GenerateToken(userId uint, role string) (string, error)
 	Middleware() echo.MiddlewareFunc
 	AdminMiddleware() echo.MiddlewareFunc
+	UserMiddleware() echo.MiddlewareFunc
 	GetClaims(c echo.Context) (*Claims, error)
 }
 

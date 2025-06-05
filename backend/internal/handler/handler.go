@@ -28,6 +28,7 @@ func (h *Handler) InitRoutes(e *echo.Echo) {
 
 	users := e.Group("/users")
 	users.Use(h.authService.Middleware())
+	users.Use(h.authService.UserMiddleware())
 	users.GET("/level", h.user.getLevel)
 	users.GET("/test/next", h.user.getTest)
 	users.POST("/test/submit/:categoryID", h.user.submitTest)
