@@ -37,6 +37,7 @@ type WordRepository interface {
 type CategoryRepository interface {
 	GetAllCategories() ([]model.Category, error)
 	Create(category *model.Category) (uint, error)
+	Delete(categoryID uint) error
 	CreateTask(task *model.Task) (uint, error)
 	DeleteTask(taskID uint) error
 	GetCategoryTasks(id uint) (model.Category, error)

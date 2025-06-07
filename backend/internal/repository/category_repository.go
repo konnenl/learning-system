@@ -32,6 +32,11 @@ func (r *categoryRepository) Create(category *model.Category) (uint, error) {
 	return category.ID, nil
 }
 
+func (r *categoryRepository) Delete(categoryID uint) error {
+	err := r.db.Delete(&model.Category{}, categoryID).Error
+	return err
+}
+
 func (r *categoryRepository) GetCategoryTasks(id uint) (model.Category, error) {
 	var category model.Category
 	err := r.db.

@@ -69,6 +69,24 @@ func (h *adminHandler) createCategory(c echo.Context) error {
 	})
 }
 
+func (h *adminHandler) deleteCategory(c echo.Context) error {
+	categoryID, err := strconv.Atoi(c.Param("categoryID"))
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": "Invalid categoryID"})
+	}
+
+	err = h.categoryRepository.Delete(uint(categoryID))
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Failed to delete category",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"message": "Category deleted",
+	})
+}
+
 func (h *adminHandler) getTasksByCategory(c echo.Context) error {
 	categoryID, err := strconv.Atoi(c.Param("categoryID"))
 	if err != nil {

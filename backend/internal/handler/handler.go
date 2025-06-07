@@ -40,6 +40,7 @@ func (h *Handler) InitRoutes(e *echo.Echo) {
 	admin.Use(h.authService.AdminMiddleware())
 	admin.GET("/categories", h.admin.getAllCategories)
 	admin.POST("/categories", h.admin.createCategory)
+	admin.DELETE("/categories/:categoryID", h.admin.deleteCategory)
 	admin.GET("/categories/:categoryID/tasks", h.admin.getTasksByCategory)
 	admin.POST("/categories/:categoryID/tasks", h.admin.createTask)
 	admin.DELETE("/categories/:categoryID/tasks/:taskID", h.admin.deleteTask)

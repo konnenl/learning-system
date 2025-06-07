@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/konnenl/learning-system/internal/repository"
 	"github.com/konnenl/learning-system/internal/service"
 	"github.com/konnenl/learning-system/internal/validator"
