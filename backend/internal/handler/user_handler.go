@@ -57,6 +57,25 @@ func (h *userHandler) getUser(c echo.Context) error {
 	})
 }
 
+//users.DELETE(":userID", h.user.deleteUser)
+func (h *userHandler) deleteUser(c echo.Context) error {
+	userID, err := strconv.Atoi(c.Param("userID"))
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": "Invalid userID"})
+	}
+
+	err = h.userRepository.Delete(uint(userID))
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Failed to delete user",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"message": "Users deleted",
+	})
+}
+
 // users.GET("/level", h.user.getLevel)
 func (h *userHandler) getLevel(c echo.Context) error {
 	claims, err := h.authService.GetClaims(c)
