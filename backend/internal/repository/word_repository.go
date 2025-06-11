@@ -50,3 +50,26 @@ func (r *wordRepository) GetLevels(words_id []uint) ([]string, error) {
 	}
 	return levels, nil
 }
+
+func (r *wordRepository) GetAllWords() ([]model.Word, error) {
+	var words []model.Word
+	err := r.db.
+		Find(&words).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return words, nil
+}
+
+func (r *wordRepository) Create(word *model.Word) (uint, error) {
+	if err := r.db.Create(&word).Error; err != nil {
+		return 0, err
+	}
+	return word.ID, nil
+}
+
+func (r *wordRepository) Delete(wordID uint) error {
+	err := r.db.Delete(&model.Word{}, wordID).Error
+	return err
+}

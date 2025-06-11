@@ -34,6 +34,9 @@ type UserRepository interface {
 type WordRepository interface {
 	GetWords() ([]*model.Word, error)
 	GetLevels(words_id []uint) ([]string, error)
+	GetAllWords() ([]model.Word, error)
+	Create(word *model.Word) (uint, error)
+	Delete(wordID uint) error
 }
 
 type CategoryRepository interface {

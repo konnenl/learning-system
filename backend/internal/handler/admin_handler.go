@@ -14,13 +14,15 @@ type adminHandler struct {
 	authService        service.AuthService
 	categoryRepository repository.CategoryRepository
 	userRepository     repository.UserRepository
+	wordRepository     repository.WordRepository
 }
 
-func newAdminHandler(authService service.AuthService, categoryRepository repository.CategoryRepository, userRepository repository.UserRepository) *adminHandler {
+func newAdminHandler(authService service.AuthService, categoryRepository repository.CategoryRepository, userRepository repository.UserRepository, wordRepository repository.WordRepository) *adminHandler {
 	return &adminHandler{
 		authService:        authService,
 		categoryRepository: categoryRepository,
 		userRepository:     userRepository,
+		wordRepository:     wordRepository,
 	}
 }
 
@@ -235,5 +237,68 @@ func (h *adminHandler) deleteAdminUser(c echo.Context) error {
 
 	return c.JSON(200, echo.Map{
 		"message": "Users deleted",
+	})
+}
+
+func (h *adminHandler) getAllWords(c echo.Context) error {
+	words, err := h.wordRepository.GetAllWords()
+	if err != nil {
+		return c.JSON(500, echo.Map{
+			"error": "Internal error",
+		})
+	}
+	words_responce := newWordsResponce(words)
+	return c.JSON(200, echo.Map{
+		"words": words_responce,
+	})
+}
+
+func (h *adminHandler) createWord(c echo.Context) error {
+	var r wordRequest
+	if err := c.Bind(&r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Bad request",
+		})
+	}
+
+	if err := c.Validate(r); err != nil {
+		return c.JSON(400, echo.Map{
+			"error":  "Validation failed",
+			"fields": validator.GetValidationErrors(err),
+		})
+	}
+
+	word := &model.Word{
+		Word:  r.Word,
+		Level: r.Level,
+	}
+
+	id, err := h.wordRepository.Create(word)
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Failed to create word",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"id": id,
+	})
+}
+
+func (h *adminHandler) deleteWord(c echo.Context) error {
+	wordID, err := strconv.Atoi(c.Param("wordID"))
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": "Invalid wordID"})
+	}
+
+	err = h.wordRepository.Delete(uint(wordID))
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Failed to delete word",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"message": "Word deleted",
 	})
 }

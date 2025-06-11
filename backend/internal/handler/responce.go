@@ -115,3 +115,22 @@ func newUsersResponce(u []model.User) []userResponce {
 	}
 	return users
 }
+
+type wordAdminResponce struct {
+	ID    uint   `json:"id"`
+	Word  string `json:"word"`
+	Level string `json:"level"`
+}
+
+func newWordsResponce(w []model.Word) []wordAdminResponce {
+	words := make([]wordAdminResponce, len(w))
+	for i, word := range w {
+		wordResponce := wordAdminResponce{
+			ID:    word.ID,
+			Word:  word.Word,
+			Level: word.Level,
+		}
+		words[i] = wordResponce
+	}
+	return words
+}

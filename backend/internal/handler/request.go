@@ -35,3 +35,8 @@ type testRequest struct {
 		Answer string `json:"answer" validate:"required"`
 	} `json:"answers" validate:"required"`
 }
+
+type wordRequest struct {
+	Word  string `json:"word" validate:"required"`
+	Level string `json:"level" validate:"required,level`
+}
