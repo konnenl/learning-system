@@ -30,7 +30,7 @@ func (h *Handler) InitRoutes(e *echo.Echo) {
 	users.Use(h.authService.Middleware())
 	users.Use(h.authService.UserMiddleware())
 	users.GET("", h.user.getUser)
-	users.DELETE(":userID", h.user.deleteUser)
+	users.DELETE("/:userID", h.user.deleteUser)
 	users.GET("/level", h.user.getLevel)
 	users.GET("/test/next", h.user.getTest)
 	users.POST("/test/submit/:categoryID", h.user.submitTest)

@@ -57,7 +57,7 @@ func (h *userHandler) getUser(c echo.Context) error {
 	})
 }
 
-//users.DELETE(":userID", h.user.deleteUser)
+// users.DELETE(":userID", h.user.deleteUser)
 func (h *userHandler) deleteUser(c echo.Context) error {
 	userID, err := strconv.Atoi(c.Param("userID"))
 	if err != nil {

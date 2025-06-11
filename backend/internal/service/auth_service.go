@@ -1,8 +1,8 @@
 package service
 
 import (
-	"fmt"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/konnenl/learning-system/internal/repository"
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"strings"
@@ -10,8 +10,9 @@ import (
 )
 
 type JWTService struct {
-	SecretKey []byte
-	Expires   int
+	SecretKey      []byte
+	Expires        int
+	userRepository repository.UserRepository
 }
 
 type Claims struct {
@@ -20,10 +21,11 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func newJWTService(key string, expires int) *JWTService {
+func newJWTService(key string, expires int, userRepository repository.UserRepository) *JWTService {
 	return &JWTService{
-		SecretKey: []byte(key),
-		Expires:   expires,
+		SecretKey:      []byte(key),
+		Expires:        expires,
+		userRepository: userRepository,
 	}
 }
 
@@ -52,7 +54,6 @@ func (s *JWTService) Middleware() echo.MiddlewareFunc {
 		ParseTokenFunc: func(c echo.Context, auth string) (interface{}, error) {
 			parts := strings.Split(auth, " ")
 			if len(parts) != 2 || parts[0] != "Bearer" {
-				fmt.Println(1)
 				return nil, echo.NewHTTPError(401, "Invalid authorization header format")
 			}
 			token, err := jwt.ParseWithClaims(parts[1], &Claims{}, func(token *jwt.Token) (interface{}, error) {
@@ -62,10 +63,16 @@ func (s *JWTService) Middleware() echo.MiddlewareFunc {
 				return nil, echo.NewHTTPError(401, "Invalid token")
 			}
 
+			if claims, ok := token.Claims.(*Claims); ok {
+				_, err := s.userRepository.GetByID(claims.UserId)
+				if err != nil {
+					return nil, echo.NewHTTPError(401, "User not found")
+				}
+			}
+
 			return token, nil
 		},
 		ErrorHandler: func(c echo.Context, err error) error {
-			fmt.Println(3)
 			return c.JSON(401, echo.Map{
 				"error": "Unauthorized",
 			})
@@ -108,7 +115,6 @@ func (s *JWTService) UserMiddleware() echo.MiddlewareFunc {
 func (s *JWTService) GetClaims(c echo.Context) (*Claims, error) {
 	token, ok := c.Get("user").(*jwt.Token)
 	if !ok {
-		fmt.Println(2)
 		return nil, echo.NewHTTPError(401, "invalid token")
 	}
 	claims, ok := token.Claims.(*Claims)

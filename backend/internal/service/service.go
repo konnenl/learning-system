@@ -14,7 +14,7 @@ type Service struct {
 func NewService(repository *repository.Repository, key string, expires int) *Service {
 	return &Service{
 		Model:   newModelService(repository.Word, repository.User),
-		Auth:    newJWTService(key, expires),
+		Auth:    newJWTService(key, expires, repository.User),
 		Testing: newTestingService(repository.Category, repository.User),
 	}
 }
