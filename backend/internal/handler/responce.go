@@ -96,3 +96,22 @@ func NewTestResponce(c model.Category) categoryTasksResponce {
 	categoryTasks.Tasks = tasks
 	return categoryTasks
 }
+
+type userResponce struct {
+	ID       uint   `jsnon:"id"`
+	Fullname string `json:"fullname"`
+	Email    string `json:"email"`
+}
+
+func newUsersResponce(u []model.User) []userResponce {
+	users := make([]userResponce, len(u))
+	for i, user := range u {
+		userResponce := userResponce{
+			ID:       user.ID,
+			Fullname: user.Fullname,
+			Email:    user.Email,
+		}
+		users[i] = userResponce
+	}
+	return users
+}

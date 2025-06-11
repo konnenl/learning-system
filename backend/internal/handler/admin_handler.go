@@ -206,3 +206,16 @@ func (h *adminHandler) createAdminUser(c echo.Context) error {
 		"id": id,
 	})
 }
+
+func (h *adminHandler) getAllAdminUser(c echo.Context) error {
+	admins, err := h.userRepository.GetAllAdmin()
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Internal error",
+		})
+	}
+	adminsResponce := newUsersResponce(admins)
+	return c.JSON(200, echo.Map{
+		"admins": adminsResponce,
+	})
+}

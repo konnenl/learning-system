@@ -95,3 +95,15 @@ func (r *userRepository) UpgrateLevel(id uint) (string, error) {
 		Error
 	return levels[*user.Level], err
 }
+
+func (r *userRepository) GetAllAdmin() ([]model.User, error) {
+	var users []model.User
+	err := r.db.
+		Where("role = ?", "admin").
+		Find(&users).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
