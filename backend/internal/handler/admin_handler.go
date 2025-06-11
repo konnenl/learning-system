@@ -101,7 +101,7 @@ func (h *adminHandler) getTasksByCategory(c echo.Context) error {
 			"error": "Failed to get category tasks",
 		})
 	}
-	categoryTasksResponce := NewCategoryTasksResponce(category)
+	categoryTasksResponce := newCategoryTasksResponce(category)
 	return c.JSON(200, echo.Map{
 		"category_tasks": categoryTasksResponce,
 	})

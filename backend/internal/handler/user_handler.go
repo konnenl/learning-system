@@ -189,7 +189,7 @@ func (h *userHandler) getTest(c echo.Context) error {
 		})
 	}
 
-	categoryTasksResponce := NewTestResponce(category)
+	categoryTasksResponce := newTestResponce(category)
 
 	return c.JSON(200, echo.Map{
 		"test": categoryTasksResponce,

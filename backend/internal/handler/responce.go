@@ -54,7 +54,7 @@ type categoryTasksResponce struct {
 	Tasks    []taskResponce   `json:"tasks"`
 }
 
-func NewCategoryTasksResponce(c model.Category) categoryTasksResponce {
+func newCategoryTasksResponce(c model.Category) categoryTasksResponce {
 	categoryTasks := categoryTasksResponce{
 		Category: categoryResponce{
 			ID:    c.ID,
@@ -76,7 +76,7 @@ func NewCategoryTasksResponce(c model.Category) categoryTasksResponce {
 	return categoryTasks
 }
 
-func NewTestResponce(c model.Category) categoryTasksResponce {
+func newTestResponce(c model.Category) categoryTasksResponce {
 	categoryTasks := categoryTasksResponce{
 		Category: categoryResponce{
 			ID:    c.ID,
