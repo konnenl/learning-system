@@ -115,6 +115,14 @@ func newUsersResponce(u []model.User) []userResponce {
 	}
 	return users
 }
+func newUserResponce(u *model.User) userResponce {
+	userResponce := userResponce{
+		ID:       u.ID,
+		Fullname: u.Fullname,
+		Email:    u.Email,
+	}
+	return userResponce
+}
 
 type wordAdminResponce struct {
 	ID    uint   `json:"id"`

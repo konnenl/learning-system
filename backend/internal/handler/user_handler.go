@@ -33,6 +33,30 @@ func newUserHandler(authService service.AuthService,
 	}
 }
 
+// user.GET("", h.user.getUser)
+func (h *userHandler) getUser(c echo.Context) error {
+	claims, err := h.authService.GetClaims(c)
+	if err != nil {
+		if httpErr, ok := err.(*echo.HTTPError); ok {
+			return httpErr
+		}
+		return echo.NewHTTPError(401, "Invalid authentication")
+	}
+
+	id := uint(claims.UserId)
+
+	user, err := h.userRepository.GetByID(id)
+	if err != nil {
+		return c.JSON(500, echo.Map{
+			"error": "Failed to get user",
+		})
+	}
+	userResponce := newUserResponce(user)
+	return c.JSON(200, echo.Map{
+		"user": userResponce,
+	})
+}
+
 // users.GET("/level", h.user.getLevel)
 func (h *userHandler) getLevel(c echo.Context) error {
 	claims, err := h.authService.GetClaims(c)
