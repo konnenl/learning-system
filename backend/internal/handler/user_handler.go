@@ -59,12 +59,17 @@ func (h *userHandler) getUser(c echo.Context) error {
 
 // users.DELETE(":userID", h.user.deleteUser)
 func (h *userHandler) deleteUser(c echo.Context) error {
-	userID, err := strconv.Atoi(c.Param("userID"))
+	claims, err := h.authService.GetClaims(c)
 	if err != nil {
-		return c.JSON(400, echo.Map{"error": "Invalid userID"})
+		if httpErr, ok := err.(*echo.HTTPError); ok {
+			return httpErr
+		}
+		return echo.NewHTTPError(401, "Invalid authentication")
 	}
 
-	err = h.userRepository.Delete(uint(userID))
+	id := uint(claims.UserId)
+
+	err = h.userRepository.Delete(uint(id))
 	if err != nil {
 		return c.JSON(400, echo.Map{
 			"error": "Failed to delete user",
