@@ -46,5 +46,5 @@ func (h *Handler) InitRoutes(e *echo.Echo) {
 	admin.DELETE("/categories/:categoryID/tasks/:taskID", h.admin.deleteTask)
 	admin.GET("/users", h.admin.getAllAdminUser)
 	admin.POST("/users", h.admin.createAdminUser)
-	//admin.DELETE("/users/:userID", h.admin.deleteAdminUser)
+	admin.DELETE("/users/:userID", h.admin.deleteAdminUser)
 }

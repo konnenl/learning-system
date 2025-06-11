@@ -219,3 +219,21 @@ func (h *adminHandler) getAllAdminUser(c echo.Context) error {
 		"admins": adminsResponce,
 	})
 }
+
+func (h *adminHandler) deleteAdminUser(c echo.Context) error {
+	userID, err := strconv.Atoi(c.Param("userID"))
+	if err != nil {
+		return c.JSON(400, echo.Map{"error": "Invalid userID"})
+	}
+
+	err = h.userRepository.Delete(uint(userID))
+	if err != nil {
+		return c.JSON(400, echo.Map{
+			"error": "Failed to delete user",
+		})
+	}
+
+	return c.JSON(200, echo.Map{
+		"message": "Users deleted",
+	})
+}

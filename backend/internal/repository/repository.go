@@ -28,6 +28,7 @@ type UserRepository interface {
 	UpdateLevel(id uint, level string) error
 	UpgrateLevel(id uint) (string, error)
 	GetAllAdmin() ([]model.User, error)
+	Delete(userID uint) error
 }
 
 type WordRepository interface {

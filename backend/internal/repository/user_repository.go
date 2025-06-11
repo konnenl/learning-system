@@ -107,3 +107,8 @@ func (r *userRepository) GetAllAdmin() ([]model.User, error) {
 	}
 	return users, nil
 }
+
+func (r *userRepository) Delete(userID uint) error {
+	err := r.db.Delete(&model.User{}, userID).Error
+	return err
+}
