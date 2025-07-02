@@ -7,7 +7,7 @@ import multiprocessing
 max_cpu = min(4, multiprocessing.cpu_count())
 os.environ['LOKY_MAX_CPU_COUNT'] = str(max_cpu)
 
-def train():
+def train_and_save(filename):
     data_path = str(Path(__file__).parent / "data.csv")
     x_train, x_test, y_train, y_test = get_data(data_path)
     
@@ -22,10 +22,12 @@ def train():
     model.fit(x_train, y_train)
     
     print(f"Test accuracy: {model.score(x_test, y_test):.2f}")
+    with open(filename, 'wb') as file:
+        pickle.dump(model, file)
     return model
 
 if __name__ == "__main__":
-    model = train()
+    model = train_and_save()
     filename = 'model_v1.pk'
     with open(filename, 'wb') as file:
         pickle.dump(model, file)

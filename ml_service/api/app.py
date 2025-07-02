@@ -1,14 +1,25 @@
 from flask import Flask, request, jsonify
-from ml.train import train
+from ml.train import train_and_save
 from api.config import Config
 import numbers
+import dill
+import os
 
 app = Flask(__name__)
 
-model = train()  
-with open(Config.MODEL_PATH, "wb") as f:
-    import dill
-    dill.dump(model, f)
+model = None
+if os.path.exists(Config.MODEL_PATH):
+    try:
+        with open(Config.MODEL_PATH, "rb") as f:
+            model = dill.load(f)
+    except:
+        train_and_save(Config.MODEL_PATH)
+        with open(Config.MODEL_PATH, "wb") as f:
+            dill.dump(model, f)
+else:
+    train_and_save(Config.MODEL_PATH)
+    with open(Config.MODEL_PATH, "wb") as f:
+        dill.dump(model, f)
 
 level_label = ['A1','A2','B1','B2','С1','C2',]
 
